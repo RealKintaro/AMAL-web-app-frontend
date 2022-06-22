@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en" class="h-100">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="assets/css/manual_styling.css">
+
+    <title>Gestion des chambres</title>
+
+</head>
+<body class="d-flex flex-column h-100">
+    
+    <div class="container pt-4 pb-4">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
+            <a class="navbar-brand" href="acceuil.html">Association AMAL</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample09" aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+    
+            <div class="collapse navbar-collapse" id="navbarsExample09">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="acceuil.html">Acceuil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="gestion_budget.html">Budget</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="gestion_chambres.html">Chambres</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="gestion_membres.html">Membres</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="gestion_patients.html">Patients</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="gestion_demandes.html">Demandes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="">Déconnexion</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+        
+    <main role="main" class="flex-shrink-0">
+        <div class="container">
+            <h1>Ajouter une chambre</h1>
+                <div class="form-group">
+                    <!-- <label for="name">Name</label> -->
+                    <input type="text" class="form-control" id="Reference" placeholder="Reference du chambre">
+                    <select name="Disponibilité" class="form-control" id="disponibilite">
+                        <option value="true">Vrai</option>
+                        <option value="false">Faux</option>
+                    </select>
+                    <input type="text" class="form-control" id="oreiller_de_couchage" placeholder="Nombre des oreiller de couchage">
+                    <input type="text" class="form-control" id="capacite" placeholder="Capaciter">
+                    <input type="text" class="form-control" id="couverture" placeholder="nombre des couvertures">
+                    <select name="Etage" class="form-control" id="etage">
+
+                    </select>
+                    <!-- <small class="form-text text-muted">Help message here.</small> -->
+                </div>
+                <button type="submit" class="btn btn-primary" id="add" onclick="addChambre()">Ajouter</button>
+        </div>
+    </main>
+
+    <main role="main" class="flex-shrink-0 list_after_new">
+        <div class="container">
+            <h1>Liste des chambres</h1>
+            <table class="table table-striped table-hover" >
+                <thead>
+                    <tr>
+                    <th scope="col">Ref</th>
+                    <th scope="col">Disponibilité</th>
+                    <th scope="col">Etage</th>
+                    <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="lstCahmbre">
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer class="footer mt-auto py-3">
+        <div class="container pb-5">
+            <hr>
+            <span class="text-muted">
+                    Copyright &copy; 2022 | Association AMAL
+            </span>
+        </div>
+    </footer>
+
+    <script>
+
+        async function getchambres() {
+            const response = await fetch('http://localhost:8036/association-amal/chambre/');
+            console.log(response)
+            const data = await response.text();
+            
+            let chambre = JSON.parse(data);
+            chambre.map(item => {
+                var dispo = item.disponible? "Vrai" : "Faux";
+                document.getElementById('lstCahmbre').innerHTML +='<tr> <th>'+item.ref+'</th> <td>'+dispo+'</td> <td>'+item.etage.ref+'</td> <td> <a href="voir_chambre.html?ref='+item.ref+'"><button class="btn btn-primary btn-sm">Voir détails</button></a> <a href="modifier_chambre.html?ref='+item.ref+'"><button class="btn btn-outline-primary btn-sm">Modifier</button></a> <a href="supprimer_chambre.html?ref='+item.ref+'"><button class="btn btn-outline-primary btn-sm">Supprimer</button></a> </td>'
+        }); }
+
+        async function getEtage() {
+            const response = await fetch('http://localhost:8036/association-amal/etage/');
+            console.log(response)
+            const data = await response.text();
+            let etage = JSON.parse(data);
+            etage.map(item => {
+                document.getElementById('etage').innerHTML +='<option value="'+item.ref+'">'+item.ref+'</option>'
+            }); };
+
+        async function addChambre() {
+            let URL = 'http://localhost:8036/association-amal/chambre/';
+            var isTrue = document.getElementById('disponibilite').value;
+            var payload = {
+                    ref: document.getElementById('Reference').value,
+                    disponible: isTrue==="true"?true:false,
+                    capacite: parseInt(document.getElementById('capacite').value),
+                    oreiller_de_couchage: parseInt(document.getElementById('oreiller_de_couchage').value),
+                    couverture: parseInt(document.getElementById('couverture').value),
+                    etage: {ref: document.getElementById('etage').value}
+                };
+            console.log(JSON.stringify(payload));
+            fetch(URL, {
+                method: "POST",
+                headers: {'Accept': 'application/json, text/plain, */*',
+                        'Content-Type': 'application/json'},
+                body: JSON.stringify( payload )
+            })
+            .then(response => response.json()) 
+            .then( json => console.log(json)).then(() => window.location.href = "gestion_chambres.html")
+            .catch(err => console.log(err));
+        };
+
+    window.onload = function(){
+        getchambres();
+        getEtage();
+    };
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- <script src="assets/js/jquery-3.3.1.slim.min.js"></script> -->
+    <script src="assets/js/popper.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+</body>
+</html>

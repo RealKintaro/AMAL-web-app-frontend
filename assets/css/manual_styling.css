@@ -1,0 +1,25 @@
+.mr-auto, .mx-auto {
+    margin-left: auto !important;
+    margin-right: 0 !important;
+}
+
+.list_after_new {
+    margin-top: 20px;
+}
+main > .container > h1 {
+    margin-bottom: 20px;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: red !important;
+    border-color: red !important;
+}
+.btn-outline-primary {
+    color: red !important;
+    border-color: red !important;
+}
+.btn-outline-primary:hover {
+    color: white !important;
+    background-color: red !important;
+}

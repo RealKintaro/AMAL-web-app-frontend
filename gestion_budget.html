@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <link rel="stylesheet" href="assets/css/style_budget.css" />
+        <!-- Bootstrap CSS -->
+        <!-- <link rel="stylesheet" href="assets/css/bootstrap.min.css"> -->
+        <!-- <link rel="stylesheet" href="assets/css/style.css"> -->
+        <link rel="stylesheet" href="assets/css/manual_styling.css">
+        <link rel="stylesheet" href="assets/css/navbar.css">
+        <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
+        <title>Gestion de budget</title>
+    </head>
+    <body>
+        <div class="container2 pt-4 pb-4">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
+                <a class="navbar-brand" href="acceuil.html">Association AMAL</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample09" aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+        
+                <div class="collapse navbar-collapse" id="navbarsExample09">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="acceuil.html">Acceuil</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="gestion_budget.html">Budget</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="gestion_chambres.html">Chambres</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="gestion_membres.html">Membres</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="gestion_patients.html">Patients</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="gestion_demandes.html">Demandes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Déconnexion</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+        <div class="container">
+            <div class="balance_new_div">
+                <h4>Votre Solde</h4>
+                <h1 id="balance">0.00 Dhs</h1>
+        
+                <div class="inc-exp-container">
+                <div>
+                    <h4>Revenus</h4>
+                    <p id="money-plus" class="money plus">+0.00 Dhs</p>
+                </div>
+                <div>
+                    <h4>Dépenses</h4>
+                    <p id="money-minus" class="money minus">-0.00 Dhs</p>
+                </div>
+                </div>
+
+                <h3>Ajouter une transaction</h3>
+                <form id="form">
+                <div class="form-control">
+                    <label for="text">Etiquette de la transaction</label>
+                    <input type="text" id="text" value="test" placeholder="Tapez une étiquette..." />
+                </div>
+                <div class="form-control">
+                    <label for="amount">Montant de la transaction (négatif pour les dépenses, positif pour les revenus)</label>
+                    <input type="number" step="0.01" id="amount" value="10" placeholder="Tapez un montant..." />
+                </div>
+                <div class="form-control">
+                    <label for="datetime">date et l'heure de la transaction</label>
+                    <input type="datetime-local" required id="datetime">
+                </div>
+                <button class="btn">Ajouter</button>
+                </form>
+            </div>
+            <div class="history_div">
+                <h3>Historique des transactions</h3>
+                <ul id="list" class="list">
+                    <!-- <li class="minus">
+                    Cash <span>-$400</span><button class="delete-btn">x</button>
+                    </li> -->
+                </ul>
+            </div>
+        </div>
+        <script src="assets/js/script.js"></script>
+    </body>
+</html>
