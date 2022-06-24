@@ -49,29 +49,27 @@
                         class="img-fluid" alt="Sample image">
                     </div>
                     <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-                      <form action="" method="POST">
               
                         <!-- Email input -->
                         <div class="form-outline mb-4">
-                          <input type="email" id="form3Example3" class="form-control form-control-lg"
+                          <input type="text" id="login" class="form-control form-control-lg"
                             placeholder="Saisir votre adressse email" required/>
                           <label class="form-label" for="form3Example3">Adresse email</label>
                         </div>
               
                         <!-- Password input -->
                         <div class="form-outline mb-3">
-                          <input type="password" id="form3Example4" class="form-control form-control-lg"
+                          <input type="password" id="password" class="form-control form-control-lg"
                             placeholder="Saisir votre mot de passe" required/>
                           <label class="form-label" for="form3Example4">Mot de passe</label>
                         </div>
             
               
                         <div class="text-center text-lg-start mt-4 pt-2">
-                          <button type="submit" class="btn btn-primary btn-lg"
+                          <button type="submit" class="btn btn-primary btn-lg" onclick="login()"
                                 style="padding-left: 2.5rem; padding-right: 2.5rem;">Se connecter</button>
                         </div>
               
-                      </form>
                     </div>
                   </div>
                 </div>
@@ -87,6 +85,15 @@
         </div>
     </footer>
 
+    <script>
+      async function login() {
+            const response1 = await fetch('http://localhost:8036/association-amal/user/login/'+ document.getElementById('login').value +'/password/'+ document.getElementById('password').value);
+            const data1 = await response1.text();
+            let res = JSON.parse(data1);
+            if(res.login == document.getElementById('login').value && res.password == document.getElementById('password').value){
+                window.location.href = "acceuil.html";}
+        }
+    </script>
     
     <script src="assets/js/jquery-3.3.1.slim.min.js"></script>
     <script src="assets/js/popper.min.js"></script>
