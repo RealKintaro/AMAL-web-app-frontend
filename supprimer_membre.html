@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en" class="h-100">
-  <head>
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -12,9 +12,9 @@
     <link rel="stylesheet" href="assets/css/manual_styling.css">
 
     <title>Gestion des membres</title>
-   
-  </head>
-  <body class="d-flex flex-column h-100">
+
+</head>
+<body class="d-flex flex-column h-100">
     
     <div class="container pt-4 pb-4">
         <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
@@ -56,13 +56,13 @@
             <!-- <a href=""> &larr; Retour vers la liste des chambres</a> -->
             <a href="gestion_membres.html"> < Retournez vers la liste des membres</a>
             <h1>Voullez vous vraiment supprimer cette personne de l'espace</h1>
-            <p>Nom: Pisyek</p>
-            <p>Prenom: titi</p>
-            <p>CNI: titi</p>
-            <button type="submit" class="btn btn-primary">Oui, supprimer</button>
+            <div id="mbr">
+
+            </div>
+            <button type="submit" class="btn btn-primary" onclick="deleteMember()">Oui, supprimer</button>
         </div>
     </main>
-      
+
     <footer class="footer mt-auto py-3">
         <div class="container pb-5">
             <hr>
@@ -72,9 +72,37 @@
         </div>
     </footer>
 
+    <script>
+        async function getmembre() {
+            var baseUrl = (window.location).href;
+            var cni = baseUrl.substring(baseUrl.lastIndexOf('=') + 1);
+            const response = await fetch('http://localhost:8036/association-amal/membre/cni/'+cni);
+            console.log(response)
+            const data = await response.text();
+            let membre = JSON.parse(data);
+            document.getElementById('mbr').innerHTML +='<p> ID: '+ membre.id+'</p> <p> CIN:  '+ membre.cni+'</p> <p> Nom:  '+ membre.nom+'</p> <p> Prenom:  '+ membre.prenom+'</p> <p> Date d\'inscription: ' +membre.dateinscri.split("T",1)+ ' </p>'
+        
+        }
+        window.onload = function(){
+        getmembre();
+        };
+        async function deleteMember() {
+            var baseUrl = (window.location).href;
+            var cni = baseUrl.substring(baseUrl.lastIndexOf('=') + 1);
+            console.log(cni)
+            let URL = 'http://localhost:8036/association-amal/membre/cni/'+cni
+            await fetch(URL, {
+                method: "DELETE",
+                headers: {"Content-type": "application/json; charset=UTF-8"}
+            })
+            .then(response => response.json()) 
+            .then( json => console.log(json)).then(() => window.location.href = "gestion_membres.html")
+            .catch(err => console.log(err));
+        }
+    </script>
     
     <script src="assets/js/jquery-3.3.1.slim.min.js"></script>
     <script src="assets/js/popper.min.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
-  </body>
+</body>
 </html>

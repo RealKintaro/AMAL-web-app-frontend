@@ -35,7 +35,7 @@
                         <a class="nav-link" href="gestion_chambres.html">Chambres</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="gestion_membres.html*">Membres</a>
+                        <a class="nav-link" href="gestion_membres.html">Membres</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="gestion_patients.html">Patients</a>
@@ -120,8 +120,8 @@
             const data = await response.text();
             
             let chambre = JSON.parse(data);
-
-            document.getElementById('Chambre').innerHTML +='<p> ID: '+ chambre.id+'</p> <p> ref:  '+ chambre.ref+'</p> <p> disponible:  '+ chambre.disponible+'</p> <p> oreiller_de_couchage:  '+ chambre.oreiller_de_couchage+'</p> <p> couverture: ' +chambre.couverture+ ' </p> <p> Etage: ' + chambre.etage.ref+ '</p>'
+            var dispo = chambre.disponible? "Oui" : "Non";
+            document.getElementById('Chambre').innerHTML +='<p> ID: '+ chambre.id +'</p> <p> ref:  '+ chambre.ref +'</p> <p> Disponible:  '+ dispo +'</p> <p> Oreiller de couchage:  '+ chambre.oreiller_de_couchage+'</p> <p> Couverture: ' +chambre.couverture+ ' </p> <p> Etage: ' + chambre.etage.ref+ '</p>'
         
         }
         async function getBenificier(ref) {

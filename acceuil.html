@@ -63,7 +63,7 @@
                 <div class="card" style="width: 18rem;display: inline-block;">
                     <div class="card-body">
                         <h5 class="card-title">Les dépenses</h5>
-                        <p class="card-text">100220 Dirhames.</p>
+                        <p class="card-text">En Maintenance</p>
                         <a href="gestion_budget.html" class="btn btn-primary">Voir plus</a>
                     </div>
                 </div>
@@ -71,7 +71,7 @@
                 <div class="card" style="width: 18rem; display: inline-block;">
                     <div class="card-body">
                         <h5 class="card-title">Les revenus</h5>
-                        <p class="card-text">1000 Dirhames.</p>
+                        <p class="card-text">En Maintenance</p>
                         <a href="gestion_budget.html" class="btn btn-primary">Voir plus</a>
                     </div>
                 </div>
@@ -79,7 +79,7 @@
                 <div class="card" style="width: 18rem; display: inline-block;">
                     <div class="card-body">
                         <h5 class="card-title">Nombre total de membres</h5>
-                        <p class="card-text">50 membres.</p>
+                        <p class="card-text" id="nbrmembre"></p>
                         <a href="gestion_membres.html" class="btn btn-primary">Voir plus</a>
                     </div>
                 </div>
@@ -88,7 +88,7 @@
                 <div class="card" style="width: 18rem;display: inline-block;">
                     <div class="card-body">
                         <h5 class="card-title">Nombre de chambres réservées</h5>
-                        <p class="card-text">10 chambres.</p>
+                        <p class="card-text" id="nbrchambresnot"></p>
                         <a href="gestion_chambres.html" class="btn btn-primary">Voir plus</a>
                     </div>
                 </div>
@@ -96,7 +96,7 @@
                 <div class="card" style="width: 18rem; display: inline-block;">
                     <div class="card-body">
                         <h5 class="card-title">Nombre de chambres libres</h5>
-                        <p class="card-text">10 chambres.</p>
+                        <p class="card-text" id="nbrchambreslibre"></p>
                         <a href="gestion_chambres.html" class="btn btn-primary">Voir plus</a>
                     </div>
                 </div>
@@ -104,7 +104,7 @@
                 <div class="card" style="width: 18rem; display: inline-block;">
                     <div class="card-body">
                         <h5 class="card-title">Nombre total de bénéficiaires</h5>
-                        <p class="card-text">100 patients.</p>
+                        <p class="card-text" id="nbrbenef"></p>
                         <a href="gestion_patients.html" class="btn btn-primary">Voir plus</a>
                     </div>
                 </div>
@@ -115,7 +115,7 @@
                 <div class="card" style="width: 18rem; display: inline-block;">
                     <div class="card-body">
                         <h5 class="card-title">Nombre de demandes</h5>
-                        <p class="card-text">50 demandes.</p>
+                        <p class="card-text" id="nbrdemandes"></p>
                         <a href="gestion_demandes.html" class="btn btn-primary">Voir plus</a>
                     </div>
                 </div>
@@ -132,6 +132,51 @@
         </div>
     </footer>
 
+    <script>
+        async function getMembres() {
+            const response = await fetch('http://localhost:8036/association-amal/membre/');
+            console.log(response)
+            const data = await response.text();
+            let bnf = JSON.parse(data);
+            document.getElementById('nbrmembre').innerHTML += bnf.length + ' Membres.' ;
+        }
+
+        async function getDemandes() {
+            const response = await fetch('http://localhost:8036/association-amal/demande/');
+            console.log(response)
+            const data = await response.text();
+            let dmn = JSON.parse(data);
+            document.getElementById('nbrdemandes').innerHTML += dmn.length + ' Demandes.' ;
+        }
+        async function getBenificier() {
+            const response = await fetch('http://localhost:8036/association-amal/beneficiaire/');
+            console.log(response)
+            const data = await response.text();
+            let bnf = JSON.parse(data);
+            document.getElementById('nbrbenef').innerHTML += bnf.length + ' Bénéficiaires.' ;
+        }
+        async function getchambres() {
+            const response1 = await fetch('http://localhost:8036/association-amal/chambre/available/');
+            const response2 = await fetch('http://localhost:8036/association-amal/chambre/');
+
+            const data1 = await response1.text();
+            const data2 = await response2.text();
+
+            let chambreavail = JSON.parse(data1);
+            let chambrenot = JSON.parse(data2);
+
+            var lenchambrnot = chambrenot.length - chambreavail.length;
+            document.getElementById('nbrchambreslibre').innerHTML += chambreavail.length + ' Chambres.' ;
+            document.getElementById('nbrchambresnot').innerHTML += lenchambrnot + ' Chambres.' ; 
+        }
+
+    window.onload = function(){
+        getMembres();
+        getDemandes();
+        getBenificier();
+        getchambres();
+        }
+    </script>
     
     <script src="assets/js/jquery-3.3.1.slim.min.js"></script>
     <script src="assets/js/popper.min.js"></script>

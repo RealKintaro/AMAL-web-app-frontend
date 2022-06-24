@@ -11,7 +11,7 @@
     <link rel="shortcut icon" href="assets/img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="assets/css/manual_styling.css">
 
-    <title>Gestion des patients</title>
+    <title>Gestion des chambres</title>
    
   </head>
   <body class="d-flex flex-column h-100">
@@ -31,14 +31,14 @@
                     <li class="nav-item">
                         <a class="nav-link" href="gestion_budget.html">Budget</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item active">
                         <a class="nav-link" href="gestion_chambres.html">Chambres</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="gestion_membres.html">Membres</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="gestion_patients.html">Patients</a>
+                        <a class="nav-link" href="gestion_patients.html">Patients</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="gestion_demandes.html">Demandes</a>
@@ -50,57 +50,59 @@
             </div>
         </nav>
     </div>
-
+        
     <main role="main" class="flex-shrink-0">
         <div class="container">
-            <button type="submit" class="btn btn-primary" onclick="location.href=`ajouter_beneficiaire.html`">Ajouter un beneficiaire</button>
+            <h1>Ajouter un béneficier</h1>
+                <div class="form-group">
+                    <!-- <label for="name">Name</label> -->
+                    <input type="text" class="form-control" id="nom" placeholder="Nom">
+                    <input type="text" class="form-control" id="prenom" placeholder="Prenom">
+                    <input type="text" class="form-control" id="cni" placeholder="CIN">
+                    <input type="date" id="dateentree" name="Entree" value="2021-07-22" min="2020-01-01" max="2030-12-31">
+                    <input type="date" id="datesortie" name="Entree" value="2021-07-23" min="2020-01-01" max="2030-12-31">
+                    </select>
+                    <!-- <small class="form-text text-muted">Help message here.</small> -->
+                </div>
+                <button type="submit" class="btn btn-primary" id="add" onclick="addBenif()">Ajouter</button>
         </div>
     </main>
+      
+    <footer class="footer mt-auto py-3">
+        <div class="container pb-5">
+            <hr>
+            <span class="text-muted">
+                    Copyright &copy; 2022 | Association AMAL
+            </span>
+        </div>
+    </footer>
 
-    <main role="main" class="flex-shrink-0 list_after_new">
-        <div class="container">
-            <h1>Liste des Bénificier</h1>
-            <table class="table table-striped table-hover" >
-                <thead>
-                    <tr>
-                    <th scope="col">Cni</th>
-                    <th scope="col">Nom</th>
-                    <th scope="col">Prenom</th>
-                    <th scope="col">Date d'entrée</th>
-                    <th scope="col">Date de sortie</th>
-                    <th scope="col">Chambre</th>
-                    </tr>
-                </thead>
-                <tbody id="lstBnf">
-                </tbody>
-            </table>
-        </div>
-    </main>
-    
-<footer class="footer mt-auto py-3">
-    <div class="container pb-5">
-        <hr>
-        <span class="text-muted">
-                Copyright &copy; 2022 | Association AMAL
-        </span>
-    </div>
-</footer>
     <script>
-    async function getBenificier() {
-        const response = await fetch('http://localhost:8036/association-amal/beneficiaire/');
-        console.log(response)
-        const data = await response.text();
-        let bnf = JSON.parse(data);
-        bnf.map(item => {
-            if(item.chambre === null) {
-                chambre = "Aucune"
-            }else{
-                chambre = item.chambre.ref
-            }
-            document.getElementById('lstBnf').innerHTML +='<tr> <th>'+item.cni+'</th> <td>'+item.nom+'</td> <td>'+item.prenom+'</td> <td> '+item.dateentree.split("T",1)+'</td> <td>'+item.datesortie.split("T",1)+'</td> <td>'+chambre+'</td> </tr>'
-    }); }
-    window.onload = function(){
-        getBenificier();
+
+        function addBenif() {
+
+            let URL = 'http://localhost:8036/association-amal/beneficiaire/';
+            var payload = {
+                    nom: document.getElementById('nom').value,
+                    prenom: document.getElementById('prenom').value,
+                    cni: document.getElementById('cni').value,
+                    dateentree: document.getElementById('dateentree').value,
+                    datesortie: document.getElementById('datesortie').value,
+                };
+            console.log(JSON.stringify(payload));
+            fetch(URL, {
+                method: "POST",
+                headers: {'Accept': 'application/json, text/plain, */*',
+                        'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json()) 
+            .then( json => console.log(json)).then(() => window.location.href = "gestion_patients.html")
+            .catch(err => console.log(err));
+        };
+
+            window.onload = function(){
+        getEtage();
         }
     </script>
     <script src="assets/js/jquery-3.3.1.slim.min.js"></script>

@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en" class="h-100">
-  <head>
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -12,9 +12,9 @@
     <link rel="stylesheet" href="assets/css/manual_styling.css">
 
     <title>Gestion des membres</title>
-   
-  </head>
-  <body class="d-flex flex-column h-100">
+
+</head>
+<body class="d-flex flex-column h-100">
     
     <div class="container pt-4 pb-4">
         <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
@@ -50,63 +50,45 @@
             </div>
         </nav>
     </div>
+
+    <main role="main" class="flex-shrink-0">
+        <div class="container">
+            <h1>Ajouter une demande</h1>
+                <div class="form-group">
+                    <!-- <label for="name">Name</label> -->
+                    <input type="text" class="form-control" id="ref" placeholder="Reference">
+                    Choisir un beneficiaire
+                    <select name="benificier" class="form-control" id="bnf"></select>
+                    Choisir une chambre
+                    <select name="chambre" class="form-control" id="chambre"></select>
+                    <!-- <small class="form-text text-muted">Help message here.</small> -->
+                </div>
+                <button type="submit" class="btn btn-primary" id="add" onclick="adddemande()">Ajouter</button>
+        </div>
+    </main>
+
     <main role="main" class="flex-shrink-0 list_after_new">
         <div class="container">
             <h1>Liste des demandes</h1>
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                    <th scope="col">#</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Reference</th>
+                    <th scope="col">Etat</th>
+                    <th scope="col">CNI</th>
                     <th scope="col">Nom</th>
                     <th scope="col">Prenom</th>
-                    <th scope="col">CNI</th>
-                    <th scope="col">Date d'entée</th>
-                    <th scope="col">Date de sortie</th>
                     <th scope="col">Action</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>JR4875</td>
-                    <td>jj/mm/aaaa</td>
-                    <td>jj/mm/aaaa</td>
-                    <td>
-                        <a href="voir_demande.html"><button class="btn btn-primary btn-sm">Voir détails</button></a>
-                        <button onclick="location.href='supprimer_demande.html'" class="btn btn-sm">Supprimer</button>
-                    </td>
-                    </tr>
-                    <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>JR485</td>
-                    <td>jj/mm/aaaa</td>
-                    <td>jj/mm/aaaa</td>
-                    <td>
-                        <a href="voir_demande.html"><button class="btn btn-primary btn-sm">Voir détails</button></a>
-                        <button onclick="location.href='supprimer_demande.html'" class="btn btn-sm">Supprimer</button>
-                    </td>
-                    </tr>
-                    <tr>
-                    <th scope="row">3</th>
-                    <td>Larry</td>
-                    <td>the Bird</td>
-                    <td>Jp1075</td>
-                    <td>jj/mm/aaaa</td>
-                    <td>jj/mm/aaaa</td>
-                    <td>
-                        <a href="voir_demande.html"><button class="btn btn-primary btn-sm">Voir détails</button></a>
-                        <button onclick="location.href='supprimer_demande.html'" class="btn btn-sm">Supprimer</button>
-                    </td>
-                    </tr>
+                <tbody id="lstdemande">
+                    
                 </tbody>
             </table>
         </div>
     </main>
-      
+
     <footer class="footer mt-auto py-3">
         <div class="container pb-5">
             <hr>
@@ -115,9 +97,67 @@
             </span>
         </div>
     </footer>
-    
+    <script>
+        async function getDemandes() {
+        const response = await fetch('http://localhost:8036/association-amal/demande/');
+        console.log(response)
+        const data = await response.text();
+        let dmn = JSON.parse(data);
+        dmn.map(item => {
+            var accepter = item.accepter? "Accepter" : "En attente";
+            document.getElementById('lstdemande').innerHTML +='<tr> <th>'+item.id+'</th> <td>'+item.ref+'</td> <td>'+accepter+'</td> <td> '+item.beneficiaire.cni+'</td> <td> '+item.beneficiaire.nom+'</td><td> '+item.beneficiaire.prenom+'</td> <td> <a href="modifier_chambre.html?ref='+item.ref+'"><button class="btn btn-outline-primary btn-sm">Modifier</button></a> <a href="supprimer_membre.html?ref='+item.ref+'"><button class="btn btn-outline-primary btn-sm">Supprimer</button></a> </td> </tr>'
+    }); }
+
+    function adddemande() {
+
+            let URL = 'http://localhost:8036/association-amal/demande/';
+
+            var payload = {
+                    ref: document.getElementById('ref').value,
+                    beneficiaire: {cni: document.getElementById('bnf').value},
+                    chambre: {ref: document.getElementById('chambre').value}
+                };
+
+            console.log(JSON.stringify(payload));
+            fetch(URL, {
+                method: "POST",
+                headers: {'Accept': 'application/json, text/plain, */*',
+                        'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json()) 
+            .then( json => console.log(json)).then(() => window.location.href = "gestion_demandes.html")
+            .catch(err => console.log(err));
+        };
+
+        async function getBnf() {
+            const response = await fetch('http://localhost:8036/association-amal/beneficiaire/withoutchambre/');
+            console.log(response)
+            const data = await response.text();
+            let etage = JSON.parse(data);
+            etage.map(item => {
+                document.getElementById('ref').value = 'Demande-' + item.nom + '-' + item.prenom;
+
+                document.getElementById('bnf').innerHTML +='<option value="'+item.cni+'">'+item.nom + ' '+ item.prenom +'</option>'
+            }); };
+
+            async function getchambre() {
+            const response = await fetch('http://localhost:8036/association-amal/chambre/available/');
+            console.log(response)
+            const data = await response.text();
+            let etage = JSON.parse(data);
+            etage.map(item => {
+                document.getElementById('chambre').innerHTML +='<option value="'+item.ref+'">'+item.ref+'</option>'
+            }); };
+        
+    window.onload = function(){
+        getDemandes();
+        getBnf();
+        getchambre();
+        }
+    </script>
     <script src="assets/js/jquery-3.3.1.slim.min.js"></script>
     <script src="assets/js/popper.min.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
-  </body>
+</body>
 </html>

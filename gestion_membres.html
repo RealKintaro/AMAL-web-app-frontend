@@ -50,58 +50,42 @@
             </div>
         </nav>
     </div>
+
+    <main role="main" class="flex-shrink-0">
+        <div class="container">
+            <h1>Ajouter une membre</h1>
+                <div class="form-group">
+                    <!-- <label for="name">Name</label> -->
+                    <input type="text" class="form-control" id="cni" placeholder="CIN">
+                    <input type="text" class="form-control" id="nom" placeholder="Nom">
+                    <input type="text" class="form-control" id="prenom" placeholder="Prenom">
+                    <input type="date" id="dateinscri" name="Inscription" value="2021-07-22" min="2020-01-01" max="2030-12-31">
+                    <!-- <small class="form-text text-muted">Help message here.</small> -->
+                </div>
+                <button type="submit" class="btn btn-primary" id="add" onclick="addMembre()">Ajouter</button>
+        </div>
+    </main>
+
     <main role="main" class="flex-shrink-0 list_after_new">
         <div class="container">
             <h1>Liste des membres</h1>
             <table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Nom</th>
-                    <th scope="col">Prenom</th>
-                    <th scope="col">CNI</th>
-                    <th scope="col">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>JR4875</td>
-                    <td>
-                        <a href="voir_membre.html"><button class="btn btn-primary btn-sm">Voir détails</button></a>
-                        <a href="modifier_membre.html"><button class="btn btn-outline-primary btn-sm">Modifier</button></a>
-                        <button onclick="location.href='supprimer_membre.html'" class="btn btn-sm">Supprimer</button>
-                    </td>
-                    </tr>
-                    <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>JR485</td>
-                    <td>
-                        <a href="voir_membre.html"><button class="btn btn-primary btn-sm">Voir détails</button></a>
-                        <a href="modifier_chambre.html"><button class="btn btn-outline-primary btn-sm">Modifier</button></a>
-                        <button onclick="location.href='supprimer_membre.html'" class="btn btn-sm">Supprimer</button>
-                    </td>
-                    </tr>
-                    <tr>
-                    <th scope="row">3</th>
-                    <td>Larry</td>
-                    <td>the Bird</td>
-                    <td>Jp1075</td>
-                    <td>
-                        <a href="voir_membre.html"><button class="btn btn-primary btn-sm">Voir détails</button></a>
-                        <a href="modifier_membre.html"><button class="btn btn-outline-primary btn-sm">Modifier</button></a>
-                        <button onclick="location.href='supprimer_membre.html'" class="btn btn-sm">Supprimer</button>
-                    </td>
-                    </tr>
+                <table class="table table-striped table-hover" >
+                    <thead>
+                        <tr>
+                        <th scope="col">Cni</th>
+                        <th scope="col">Nom</th>
+                        <th scope="col">Prenom</th>
+                        <th scope="col">Date d'iscription</th>
+                        <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lstmembre">
                 </tbody>
             </table>
         </div>
     </main>
-      
+    
     <footer class="footer mt-auto py-3">
         <div class="container pb-5">
             <hr>
@@ -110,9 +94,44 @@
             </span>
         </div>
     </footer>
-    
+    <script>
+        async function getMembres() {
+        const response = await fetch('http://localhost:8036/association-amal/membre/');
+        console.log(response)
+        const data = await response.text();
+        
+        let bnf = JSON.parse(data);
+        bnf.map(item => {
+            document.getElementById('lstmembre').innerHTML +='<tr> <th>'+item.cni+'</th> <td>'+item.nom+'</td> <td>'+item.prenom+'</td> <td> '+item.dateinscri.split("T",1)+'</td> <td> <a href="modifier_chambre.html?cni='+item.cni+'"><button class="btn btn-outline-primary btn-sm">Modifier</button></a> <a href="supprimer_membre.html?cni='+item.cni+'"><button class="btn btn-outline-primary btn-sm">Supprimer</button></a> </td> </tr>'
+    }); }
+
+    function addMembre() {
+
+            let URL = 'http://localhost:8036/association-amal/membre/';
+            var payload = {
+                    nom: document.getElementById('nom').value,
+                    prenom: document.getElementById('prenom').value,
+                    cni: document.getElementById('cni').value,
+                    dateinscri: document.getElementById('dateinscri').value,
+                };
+            console.log(JSON.stringify(payload));
+            fetch(URL, {
+                method: "POST",
+                headers: {'Accept': 'application/json, text/plain, */*',
+                        'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json()) 
+            .then( json => console.log(json)).then(() => window.location.href = "gestion_membres.html")
+            .catch(err => console.log(err));
+        };
+
+    window.onload = function(){
+        getMembres();
+        }
+    </script>
     <script src="assets/js/jquery-3.3.1.slim.min.js"></script>
     <script src="assets/js/popper.min.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
-  </body>
+</body>
 </html>
